@@ -1,9 +1,11 @@
 package main
 
 import (
-	"net/http"
 	"fmt"
-	"student-courses-with-transactions/database"
+	"net/http"
+
+	"student-courses-with-transactions/internal/repository"
+	"student-courses-with-transactions/internal/usecases"
 
 	"github.com/go-chi/chi/v5"
 	"github.com/joho/godotenv"
@@ -17,9 +19,19 @@ func main() {
 		return
 	}
 
-	
-	database.ConnectDb()
+	// connecting to db
+	db, err := repository.ConnectDb()
 
+	if err != nil {
+		fmt.Printf("Error while coonecting to database %v", err)
+	}
+
+	// Registering all usecases(services)
+	dao := repository.NewDAO(db)
+	usecases.NewCourseService(dao)
+
+
+	// setting chi router
 	app := chi.NewRouter()
 	setUpRoutes(app)
 	

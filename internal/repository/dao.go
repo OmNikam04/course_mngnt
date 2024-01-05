@@ -18,7 +18,8 @@ type dao struct{}
 
 var DB *pgxpool.Pool
 
-func NewDAO() DAO {
+func NewDAO(db *pgxpool.Pool) DAO {
+	DB = db
 	return &dao{}
 }
 
